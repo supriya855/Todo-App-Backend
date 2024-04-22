@@ -33,21 +33,19 @@ namespace TodoApplicationWebAPI.Controllers
             _logger.LogInformation("Succesfully input added");
             return Ok(response);
         }
-        [HttpPut("{id:length(24)}")]
-        public IActionResult Update(string id, TodoModel upInput)
-        {
-            var task = _dbContext.Get(id);
-
-
-            if (task == null)
-            {
-                return NotFound();
-            }
-
-            _dbContext.Update(id, upInput);
-            _logger.LogInformation("Succesfully upinput updated");
-            return NoContent();
-        }
+          [HttpPut("{id:length(24)}")]
+       public IActionResult Update(string id, TodoModel upInput)
+       {
+           TodoModel response = new();
+           var task = _dbContext.Get(id);
+           if (task == null)
+           {
+               return NotFound();
+           }
+           response = _dbContext.Update(id, upInput);
+           _logger.LogInformation("Succesfully upinput updated");
+           return Ok(response);
+       }
         [HttpDelete("{id:length(24)}")]
         public IActionResult Delete(string id)
         {
