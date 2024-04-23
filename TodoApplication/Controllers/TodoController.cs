@@ -58,7 +58,7 @@ namespace TodoApplicationWebAPI.Controllers
 
             _dbContext.Delete(task.Id);
             _logger.LogInformation("Succesfully respective id input deleted");
-            return NoContent();
+             return Ok("Succesfully respective id input deleted");
         }
 
     }
