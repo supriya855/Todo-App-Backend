@@ -1,6 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using TodoApplicationWebAPI.Services;
 using TodoApplicationWebAPI.Model;
+using System.Xml;
+using MongoDB.Bson;
+using System.Threading.Tasks;
 
 namespace TodoApplicationWebAPI.Controllers
 {
@@ -16,36 +19,70 @@ namespace TodoApplicationWebAPI.Controllers
             _dbContext = dbContext;
 
         }
+        BaseResponse<TodoModel> result = new();
         [HttpGet]
         //public ActionResult<List<TodoModel>> Get() =>
         //   _dbContext.Get();
-        public ActionResult<List<TodoModel>> Get()
+        public BaseResponse<List<TodoModel>> Get()
         {
+            BaseResponse<List<TodoModel>> res = new();
             var todos = _dbContext.GetAllTodos();
-            return Ok(todos);
+            if (todos != null)
+            {
+                res.ResponseCode = "OK";
+                res.ResponseMessage = "Success";
+                res.ResultsetData = todos;
+            }
+            else
+            {
+                res.ResponseCode = "KO";
+                res.ResponseMessage = "Failure";
+                res.ResultsetData = todos;
+            }
+            return res;
         }
 
         [HttpPost]
-        public IActionResult Create(TodoModel input)
+        public BaseResponse<TodoModel> Create(TodoModel input)
         {
             TodoModel response = new();
+            
             response = _dbContext.Create(input);
+            if (response == null)
+            {
+                result.ResponseCode = "KO";
+                result.ResponseMessage = "Failure";
+                result.ResultsetData = response;
+            }
             _logger.LogInformation("Succesfully input added");
-            return Ok(response);
+            result.ResponseCode = "OK";
+            result.ResponseMessage = "Success";
+            result.ResultsetData = response;
+            return result;
+
+           
         }
-          [HttpPut("{id:length(24)}")]
-       public IActionResult Update(string id, TodoModel upInput)
-       {
-           TodoModel response = new();
-           var task = _dbContext.Get(id);
-           if (task == null)
-           {
-               return NotFound();
-           }
-           response = _dbContext.Update(id, upInput);
-           _logger.LogInformation("Succesfully upinput updated");
-           return Ok(response);
-       }
+        [HttpPut("{id:length(24)}")]
+        public BaseResponse<TodoModel> Update(string id, TodoModel upInput)
+        {
+            TodoModel response = new();
+            var task = _dbContext.Get(id);
+
+
+            if (task == null)
+            {
+                result.ResponseCode = "KO";
+                result.ResponseMessage = "Failure";
+                result.ResultsetData = response;
+            }
+            response = _dbContext.Update(id, upInput);
+           
+            _logger.LogInformation("Succesfully upinput updated");
+            result.ResponseCode = "OK";
+            result.ResponseMessage = "Success";
+            result.ResultsetData = response;
+            return result;
+        }
         [HttpDelete("{id:length(24)}")]
         public IActionResult Delete(string id)
         {
@@ -56,9 +93,9 @@ namespace TodoApplicationWebAPI.Controllers
                 return NotFound();
             }
 
-            _dbContext.Delete(task.Id);
+            _dbContext.Delete(task.uniqueId);
             _logger.LogInformation("Succesfully respective id input deleted");
-             return Ok("Succesfully respective id input deleted");
+            return Ok("Succesfully respective id input deleted");
         }
 
     }
