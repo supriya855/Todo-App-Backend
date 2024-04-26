@@ -67,20 +67,29 @@ namespace TodoApplicationWebAPI.Controllers
         {
             TodoModel response = new();
             var task = _dbContext.Get(id);
-
-
             if (task == null)
             {
+               _logger.LogInformation("Unable to fetch the id to update in DB");
                 result.ResponseCode = "KO";
                 result.ResponseMessage = "Failure";
                 result.ResultsetData = response;
             }
             response = _dbContext.Update(id, upInput);
-           
-            _logger.LogInformation("Succesfully upinput updated");
-            result.ResponseCode = "OK";
-            result.ResponseMessage = "Success";
-            result.ResultsetData = response;
+            if (response!= null)
+             {
+                 _logger.LogInformation("Succesfully upinput updated");
+                 result.ResponseCode = "OK";
+                 result.ResponseMessage = "Success";
+                 result.ResultsetData = response;
+             }
+             else
+             {
+              _logger.LogInformation("Failed to update the upinput");
+                 result.ResponseCode = "KO";
+                 result.ResponseMessage = "Failure";
+                 result.ResultsetData = response;
+            
+             }
             return result;
         }
         [HttpDelete("{id:length(24)}")]
