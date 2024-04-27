@@ -11,8 +11,8 @@ namespace TodoApplicationWebAPI.Model
     {
             [BsonId]
             [BsonRepresentation(BsonType.ObjectId)]
-            public string Id { get; set; }
+            public string uniqueId { get; set; }
             public string Task { get; set; }
-        public string status { get; set; }
+            public string status { get; set; }
     }
 }
