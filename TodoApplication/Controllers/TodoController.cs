@@ -93,19 +93,24 @@ namespace TodoApplicationWebAPI.Controllers
             return result;
         }
         [HttpDelete("{id:length(24)}")]
-        public IActionResult Delete(string id)
-        {
-            var task = _dbContext.Get(id);
-
-            if (task == null)
-            {
-                return NotFound();
-            }
-
-            _dbContext.Delete(task.uniqueId);
-            _logger.LogInformation("Succesfully respective id input deleted");
-            return Ok("Succesfully respective id input deleted");
-        }
+        public BaseResponse Delete(string id)
+      {
+          BaseResponse response = new();
+          var task = _dbContext.Get(id);
+    
+          if (task == null)
+          {
+              response.ResponseCode = "KO";
+              response.ResponseMessage = "Failure";
+             
+          }
+          _dbContext.Delete(task.uniqueId);
+          _logger.LogInformation("Succesfully respective id input deleted");
+          response.ResponseCode = "OK";
+          response.ResponseMessage = "Success";
+    
+          return response;
+      }
 
     }
 }
