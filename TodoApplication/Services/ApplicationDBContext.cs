@@ -33,17 +33,27 @@ namespace TodoApplicationWebAPI.Services
             _todo.InsertOne(input);
             return input;
         }
-        public TodoModel Get(string id) => _todo.Find(Tasks => Tasks.Id == id).FirstOrDefault();
+        public TodoModel Get(string id) => _todo.Find(Tasks => Tasks.uniqueId == id).FirstOrDefault();
 
-         public TodoModel Update(string id, TodoModel updatedTask)
-         {
-             _todo.ReplaceOne(Tasks => Tasks.uniqueId == id, updatedTask);
-        
-             // Retrieve the updated task from the database
-             TodoModel retrievedTask = _todo.Find(Tasks => Tasks.uniqueId == id).FirstOrDefault();
-        
-             return retrievedTask;
-         }
-        public void Delete(string id) => _todo.DeleteOne(Tasks => Tasks.Id == id);
+        //public TodoModel Update(string id, TodoModel updatedTask)
+        //{
+        //    _todo.ReplaceOne(Tasks => Tasks.uniqueId == id, updatedTask);
+            
+        //    return updatedTask;
+        //}
+    public TodoModel Update(string id, TodoModel updatedTask)
+    {
+        _todo.ReplaceOne(Tasks => Tasks.uniqueId == id, updatedTask);
+
+        // Retrieve the updated task from the database
+        TodoModel retrievedTask = _todo.Find(Tasks => Tasks.uniqueId == id).FirstOrDefault();
+
+        return retrievedTask;
+    }
+
+    ////var updatedTaskFromDb = _todo.Find(Tasks => Tasks.uniqueId == id);
+
+    //return (TodoModel)updatedTaskFromDb;
+    public void Delete(string id) => _todo.DeleteOne(Tasks => Tasks.uniqueId == id);
     }
 }

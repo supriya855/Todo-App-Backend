@@ -5,14 +5,14 @@
         public string? ResponseCode { get; set; }
 
         public string? ResponseMessage { get; set; }
-        
+
         public T? ResultsetData { get; set; }
 
     }
     public class BaseResponse
     {
-       public string? ResponseCode { get; set; }
+        public string? ResponseCode { get; set; }
 
-       public string? ResponseMessage { get; set; }
+        public string? ResponseMessage { get; set; }
     }
 }

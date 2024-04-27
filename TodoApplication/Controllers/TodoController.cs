@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using TodoApplicationWebAPI.Services;
 using TodoApplicationWebAPI.Model;
 using System.Xml;
@@ -23,7 +23,7 @@ namespace TodoApplicationWebAPI.Controllers
         [HttpGet]
         //public ActionResult<List<TodoModel>> Get() =>
         //   _dbContext.Get();
-        public BaseResponse<List<TodoModel>> Get()
+        public ActionResult<List<TodoModel>> Get()
         {
             BaseResponse<List<TodoModel>> res = new();
             var todos = _dbContext.GetAllTodos();
@@ -39,11 +39,11 @@ namespace TodoApplicationWebAPI.Controllers
                 res.ResponseMessage = "Failure";
                 res.ResultsetData = todos;
             }
-            return res;
+            return Ok(res);
         }
 
         [HttpPost]
-        public BaseResponse<TodoModel> Create(TodoModel input)
+        public IActionResult Create(TodoModel input)
         {
             TodoModel response = new();
             
@@ -58,59 +58,59 @@ namespace TodoApplicationWebAPI.Controllers
             result.ResponseCode = "OK";
             result.ResponseMessage = "Success";
             result.ResultsetData = response;
-            return result;
+            return Ok(result);
 
            
         }
         [HttpPut("{id:length(24)}")]
-        public BaseResponse<TodoModel> Update(string id, TodoModel upInput)
+        public IActionResult Update(string id, TodoModel upInput)
         {
             TodoModel response = new();
             var task = _dbContext.Get(id);
+
+
             if (task == null)
             {
-               _logger.LogInformation("Unable to fetch the id to update in DB");
                 result.ResponseCode = "KO";
                 result.ResponseMessage = "Failure";
                 result.ResultsetData = response;
             }
             response = _dbContext.Update(id, upInput);
             if (response!= null)
-             {
-                 _logger.LogInformation("Succesfully upinput updated");
-                 result.ResponseCode = "OK";
-                 result.ResponseMessage = "Success";
-                 result.ResultsetData = response;
-             }
-             else
-             {
-              _logger.LogInformation("Failed to update the upinput");
-                 result.ResponseCode = "KO";
-                 result.ResponseMessage = "Failure";
-                 result.ResultsetData = response;
-            
-             }
-            return result;
+            {
+                _logger.LogInformation("Succesfully upinput updated");
+                result.ResponseCode = "OK";
+                result.ResponseMessage = "Success";
+                result.ResultsetData = response;
+            }
+            else
+            {
+                result.ResponseCode = "KO";
+                result.ResponseMessage = "Failure";
+                result.ResultsetData = response;
+
+            }
+            return Ok(result);
         }
         [HttpDelete("{id:length(24)}")]
         public BaseResponse Delete(string id)
-      {
-          BaseResponse response = new();
-          var task = _dbContext.Get(id);
-    
-          if (task == null)
-          {
-              response.ResponseCode = "KO";
-              response.ResponseMessage = "Failure";
-             
-          }
-          _dbContext.Delete(task.uniqueId);
-          _logger.LogInformation("Succesfully respective id input deleted");
-          response.ResponseCode = "OK";
-          response.ResponseMessage = "Success";
-    
-          return response;
-      }
+        {
+            BaseResponse response = new();
+            var task = _dbContext.Get(id);
+
+            if (task == null)
+            {
+                response.ResponseCode = "KO";
+                response.ResponseMessage = "Failure";
+               
+            }
+            _dbContext.Delete(task.uniqueId);
+            _logger.LogInformation("Succesfully respective id input deleted");
+            response.ResponseCode = "OK";
+            response.ResponseMessage = "Success";
+
+            return response;
+        }
 
     }
 }

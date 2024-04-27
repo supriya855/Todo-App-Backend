@@ -9,9 +9,9 @@ namespace TodoApplicationWebAPI.Model
 {
     public class TodoModel
     {
-            [BsonId]
-            [BsonRepresentation(BsonType.ObjectId)]
-            public string uniqueId { get; set; }
+        [BsonId]
+        [BsonRepresentation(BsonType.ObjectId)]
+        public string uniqueId { get; set; }
             public string Task { get; set; }
             public string status { get; set; }
     }
