@@ -35,8 +35,15 @@ namespace TodoApplicationWebAPI.Services
         }
         public TodoModel Get(string id) => _todo.Find(Tasks => Tasks.Id == id).FirstOrDefault();
 
-        public void Update(string id, TodoModel updatedTask) => _todo.ReplaceOne(Tasks => Tasks.Id == id, updatedTask);
-
+         public TodoModel Update(string id, TodoModel updatedTask)
+         {
+             _todo.ReplaceOne(Tasks => Tasks.uniqueId == id, updatedTask);
+        
+             // Retrieve the updated task from the database
+             TodoModel retrievedTask = _todo.Find(Tasks => Tasks.uniqueId == id).FirstOrDefault();
+        
+             return retrievedTask;
+         }
         public void Delete(string id) => _todo.DeleteOne(Tasks => Tasks.Id == id);
     }
 }
